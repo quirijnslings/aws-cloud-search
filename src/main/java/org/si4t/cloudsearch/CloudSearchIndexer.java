@@ -1,18 +1,5 @@
 package org.si4t.cloudsearch;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
-
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.cloudsearchdomain.model.DocumentServiceException;
 import com.tridion.configuration.Configuration;
@@ -23,6 +10,17 @@ import com.tridion.storage.si4t.IndexingException;
 import com.tridion.storage.si4t.SearchIndex;
 import com.tridion.storage.si4t.SearchIndexData;
 import com.tridion.storage.si4t.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CloudSearchIndexer implements SearchIndex {
 	
@@ -50,7 +48,6 @@ public class CloudSearchIndexer implements SearchIndex {
 	
 	private int indexBatchSize;
 
-	@Override
 	public void configure(Configuration configuration) throws ConfigurationException
 	{
 		log.debug("Configuration is: " + configuration.toString());
@@ -88,7 +85,6 @@ public class CloudSearchIndexer implements SearchIndex {
 		//Angel: We are only managing one document endpoint ATM
 	}
 
-	@Override
 	public void addItemToIndex(SearchIndexData data) throws IndexingException
 	{		
 		if (Utils.StringIsNullOrEmpty(data.getUniqueIndexId()))
@@ -109,7 +105,6 @@ public class CloudSearchIndexer implements SearchIndex {
 		}
 	}
 
-	@Override
 	public void removeItemFromIndex(BaseIndexData data) throws IndexingException
 	{
 		if (Utils.StringIsNullOrEmpty(data.getUniqueIndexId()))
@@ -120,7 +115,6 @@ public class CloudSearchIndexer implements SearchIndex {
 		this.itemRemovals.put(data.getUniqueIndexId(), data);
 	}
 
-	@Override
 	public void updateItemInIndex(SearchIndexData data) throws IndexingException
 	{
 		if (Utils.StringIsNullOrEmpty(data.getUniqueIndexId()))
@@ -131,17 +125,14 @@ public class CloudSearchIndexer implements SearchIndex {
 		this.itemUpdates.put(data.getUniqueIndexId(), data);
 	}
 
-	@Override
 	public void addBinaryToIndex(BinaryIndexData data) throws IndexingException {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public void removeBinaryFromIndex(BaseIndexData data) throws IndexingException {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public void commit(String publicationId) throws IndexingException
 	{
 		try
@@ -243,11 +234,12 @@ public class CloudSearchIndexer implements SearchIndex {
 			DocumentBatch documentBatch = null;
 			for (Entry<String, BaseIndexData> entry : itemsToRemove.entrySet())
 			{
-				if (i % indexBatchSize == 0)
+				if (i % indexBatchSize == 0 || documentBatch == null)
 				{
 					documentBatch = new DocumentBatch();
 					groupedDocuments.add(documentBatch);
 				}
+
 				documentBatch.getItems().add(
 						new DocumentData(DocumentDataType.delete, entry.getValue().getUniqueIndexId())
 				);
@@ -354,7 +346,6 @@ public class CloudSearchIndexer implements SearchIndex {
 		itemUpdates.clear();
 	}	
 
-	@Override
 	public void destroy() {
 		CloudSearchIndexDispatcher.INSTANCE.destroyServers();
 	}
