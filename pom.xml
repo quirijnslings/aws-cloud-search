@@ -29,14 +29,54 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <outputDirectory>dist</outputDirectory>
+                    <outputDirectory>${project.basedir}/dist</outputDirectory>
                     <!-- TODO: update this when using proper MVN versioning -->
                     <finalName>si4t-cloudsearch-1.0</finalName>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <!-- Do note the exclusions. These should come with the Tridion Deployer-->
+                    <!-- TODO: check whether we need all of the AWS jars. If not - exclude! -->
+                    <execution>
+                        <id>install</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/lib</outputDirectory>
+                            <excludeGroupIds>com.tridion,org.slf4j,org.apache,commons-io,commons-codec,commons-logging</excludeGroupIds>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/lib</outputDirectory>
+                            <excludeGroupIds>com.tridion,org.slf4j,org.apache,commons-io,commons-codec,commons-logging</excludeGroupIds>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/lib</outputDirectory>
+                            <excludeGroupIds>com.tridion,org.slf4j,org.apache,commons-io,commons-codec,commons-logging</excludeGroupIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-    
+
     <dependencies>
         <dependency>
             <!-- TODO: upload si4t to Maven -->
