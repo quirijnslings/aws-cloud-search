@@ -36,50 +36,48 @@
             </plugin>
         </plugins>
     </build>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <!-- TODO: upload si4t to Maven -->
-                <groupId>org.si4t</groupId>
-                <artifactId>si4t</artifactId>
-                <version>${si4t.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.amazonaws</groupId>
-                <artifactId>aws-java-sdk</artifactId>
-                <version>${amazonaws.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tridion</groupId>
-                <artifactId>cd_model</artifactId>
-                <version>${tridion.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tridion</groupId>
-                <artifactId>cd_core</artifactId>
-                <version>${tridion.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>${gson.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    
+    <dependencies>
+        <dependency>
+            <!-- TODO: upload si4t to Maven -->
+            <groupId>org.si4t</groupId>
+            <artifactId>si4t</artifactId>
+            <version>${si4t.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>${amazonaws.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tridion</groupId>
+            <artifactId>cd_model</artifactId>
+            <version>${tridion.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tridion</groupId>
+            <artifactId>cd_core</artifactId>
+            <version>${tridion.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+    </dependencies>
 </project>
