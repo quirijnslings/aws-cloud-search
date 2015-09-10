@@ -29,6 +29,9 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                    </archive>
                     <outputDirectory>${project.basedir}/dist</outputDirectory>
                     <!-- TODO: update this when using proper MVN versioning -->
                     <finalName>si4t-cloudsearch-1.0</finalName>
