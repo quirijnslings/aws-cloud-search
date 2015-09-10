@@ -38,7 +38,7 @@ public class CloudSearchIndexer implements SearchIndex {
 	
 	private Map<String, SearchIndexData> itemUpdates = new ConcurrentHashMap<String, SearchIndexData>();
 	
-	private String documentdEndpoint;
+	private String documentEndpoint;
 	
 	private String authentication;
 
@@ -54,9 +54,9 @@ public class CloudSearchIndexer implements SearchIndex {
 
 		Configuration indexerConfiguration = configuration.getChild(INDEXER_NODE);
 
-		String documentdEndpoint = indexerConfiguration.getAttribute("documentdEndpoint");
-		log.info("Setting Document Endpoint to: " + documentdEndpoint);
-		this.documentdEndpoint = documentdEndpoint;
+		String documentEndpoint = indexerConfiguration.getAttribute("documentEndpoint");
+		log.info("Setting Document Endpoint to: " + documentEndpoint);
+		this.documentEndpoint = documentEndpoint;
 
 		String authentication = indexerConfiguration.getAttribute("authentication");
 		log.info("Authentication method set to: " + authentication);
@@ -185,7 +185,7 @@ public class CloudSearchIndexer implements SearchIndex {
 							CloudSearchIndexDispatcher.INSTANCE.
 									addBinaries(binaryAdds,
 											new CloudSearchClientRequest(
-													this.documentdEndpoint,
+													this.documentEndpoint,
 													this.authentication,
 													this.access_key_id,
 													this.secret_access_key)
@@ -283,7 +283,7 @@ public class CloudSearchIndexer implements SearchIndex {
 						(
 								DispatcherAction.PERSIST,
 								new CloudSearchClientRequest(
-										this.documentdEndpoint,
+										this.documentEndpoint,
 										this.authentication,
 										this.access_key_id,
 										this.secret_access_key
@@ -312,7 +312,7 @@ public class CloudSearchIndexer implements SearchIndex {
 						(
 								DispatcherAction.PERSIST,
 								new CloudSearchClientRequest(
-										this.documentdEndpoint,
+										this.documentEndpoint,
 										this.authentication,
 										this.access_key_id,
 										this.secret_access_key
