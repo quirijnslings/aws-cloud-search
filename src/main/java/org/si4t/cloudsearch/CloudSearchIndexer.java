@@ -262,8 +262,6 @@ public class CloudSearchIndexer implements SearchIndex {
 			String fieldName = fieldEntry.getKey();
 			ArrayList<Object> fieldValues =  fieldEntry.getValue();
 			
-			log.debug("Field: " + fieldName + ", size: " + fieldValues.size());
-			
 			if (fieldValues.size() == 1)
 			{
 				document.getFields().put(fieldName, fieldValues.get(0));
