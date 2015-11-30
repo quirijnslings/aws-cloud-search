@@ -260,10 +260,17 @@ public class CloudSearchIndexer implements SearchIndex {
 		for (Entry<String, ArrayList<Object>> fieldEntry : fieldList.entrySet())
 		{
 			String fieldName = fieldEntry.getKey();
-			for (Object o : fieldEntry.getValue())
+			ArrayList<Object> fieldValues =  fieldEntry.getValue();
+			
+			log.debug("Field: " + fieldName + ", size: " + fieldValues.size());
+			
+			if (fieldValues.size() == 1)
 			{
-				document.getFields().put(fieldName, o); //Right now we have just one element on the array ALWAYS
-				log.trace("Adding field : " + fieldName + ": " + o);
+				document.getFields().put(fieldName, fieldValues.get(0));
+			}
+			else
+			{
+				document.getFields().put(fieldName, fieldValues);
 			}
 		}
 		return document;
