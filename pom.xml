@@ -6,13 +6,13 @@
 
     <groupId>org.si4t</groupId>
     <artifactId>si4t-cloudsearch</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.4</version>
 
     <packaging>jar</packaging>
 
     <properties>
-        <tridion.version>7.1.0</tridion.version>
-        <si4t.version>1.0</si4t.version>
+        <tridion.version>[11.5.0,11.5.1)</tridion.version>
+        <si4t.version>1.4</si4t.version>
         <amazonaws.version>1.10.16</amazonaws.version>
         <commons-io.version>2.4</commons-io.version>
         <httpclient.version>4.3.3</httpclient.version>
@@ -24,67 +24,22 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.1</version>
-                <configuration>
-                    <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
-                    </archive>
-                    <outputDirectory>${project.basedir}/dist</outputDirectory>
-                    <!-- TODO: update this when using proper MVN versioning -->
-                    <finalName>si4t-cloudsearch-1.0</finalName>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <!-- Do note the exclusions. These should come with the Tridion Deployer-->
-                    <!-- TODO: check whether we need all of the AWS jars. If not - exclude! -->
-                    <execution>
-                        <id>install</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.basedir}/lib</outputDirectory>
-                            <excludeGroupIds>com.tridion,org.slf4j,org.apache,commons-io,commons-codec,commons-logging</excludeGroupIds>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>package</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.basedir}/lib</outputDirectory>
-                            <excludeGroupIds>com.tridion,org.slf4j,org.apache,commons-io,commons-codec,commons-logging</excludeGroupIds>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.basedir}/lib</outputDirectory>
-                            <excludeGroupIds>com.tridion,org.slf4j,org.apache,commons-io,commons-codec,commons-logging</excludeGroupIds>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.0</version>
+            <configuration>
+                <release>11</release>
+            </configuration>
+        </plugin>
+    </plugins>
     </build>
 
     <dependencies>
         <dependency>
             <!-- TODO: upload si4t to Maven -->
             <groupId>org.si4t</groupId>
-            <artifactId>si4t</artifactId>
+            <artifactId>si4t-se</artifactId>
             <version>${si4t.version}</version>
         </dependency>
         <dependency>
@@ -103,13 +58,8 @@
             <version>${httpclient.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.tridion</groupId>
-            <artifactId>cd_model</artifactId>
-            <version>${tridion.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tridion</groupId>
-            <artifactId>cd_core</artifactId>
+            <groupId>com.sdl.delivery</groupId>
+            <artifactId>udp-core</artifactId>
             <version>${tridion.version}</version>
         </dependency>
         <dependency>
