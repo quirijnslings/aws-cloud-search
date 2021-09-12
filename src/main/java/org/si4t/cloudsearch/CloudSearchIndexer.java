@@ -17,6 +17,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -47,6 +48,7 @@ public class CloudSearchIndexer implements SearchIndex {
 	private String access_key_id;
 	
 	private int indexBatchSize;
+	private List<String> activePublicationIds;
 
 	public void configure(Configuration configuration) throws ConfigurationException
 	{
@@ -58,6 +60,21 @@ public class CloudSearchIndexer implements SearchIndex {
 		log.info("Setting Document Endpoint to: " + documentEndpoint);
 		this.documentEndpoint = documentEndpoint;
 
+		// configure publications for which this indexer should be active
+		this.activePublicationIds = new LinkedList<>();
+		try {
+			for (Configuration pub : indexerConfiguration.getChild("Publications").getChildren()) {
+				if (pub.hasAttribute("Id")) {
+					String id = pub.getAttribute("Id");
+					if (id != null) {
+						this.activePublicationIds.add(id);
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.info("no Publications found inside Indexer, assuming that all items must be pushed to AWS Cloudsearch");
+		}
+		
 		String authentication = indexerConfiguration.getAttribute("authentication");
 		log.info("Authentication method set to: " + authentication);
 		this.authentication = authentication;
@@ -86,7 +103,13 @@ public class CloudSearchIndexer implements SearchIndex {
 	}
 
 	public void addItemToIndex(SearchIndexData data) throws IndexingException
-	{		
+	{
+		String publicationId = data.getPublicationItemId();
+		log.debug(("addItemToIndex called for publication id " + publicationId));
+		if (! (activePublicationIds.isEmpty() || activePublicationIds.contains(publicationId))) {
+			log.debug("not adding anything to index because publicationId " + publicationId + " is not in the list of active publication ids");
+			return;
+		}
 		if (Utils.StringIsNullOrEmpty(data.getUniqueIndexId()))
 		{
 			log.error("Addition failed. Unique ID is empty");
@@ -107,6 +130,12 @@ public class CloudSearchIndexer implements SearchIndex {
 
 	public void removeItemFromIndex(BaseIndexData data) throws IndexingException
 	{
+		String publicationId = data.getPublicationItemId();
+		log.debug(("removeItemFromIndex called for publication id " + publicationId));
+		if (! (activePublicationIds.isEmpty() || activePublicationIds.contains(publicationId))) {
+			log.debug("not removing anything from index because publicationId " + publicationId + " is not in the list of active publication ids");
+			return;
+		}
 		if (Utils.StringIsNullOrEmpty(data.getUniqueIndexId()))
 		{
 			log.error("Removal addition failed. Unique ID empty");
@@ -117,6 +146,12 @@ public class CloudSearchIndexer implements SearchIndex {
 
 	public void updateItemInIndex(SearchIndexData data) throws IndexingException
 	{
+		String publicationId = data.getPublicationItemId();
+		log.debug(("updateItemInIndex called for publication id " + publicationId));
+		if (! (activePublicationIds.isEmpty() || activePublicationIds.contains(publicationId))) {
+			log.debug("not updating anything because publicationId " + publicationId + " is not in the list of active publication ids");
+			return;
+		}
 		if (Utils.StringIsNullOrEmpty(data.getUniqueIndexId()))
 		{
 			log.error("Adding update item failed. Unique ID empty");
@@ -135,6 +170,10 @@ public class CloudSearchIndexer implements SearchIndex {
 
 	public void commit(String publicationId) throws IndexingException
 	{
+		if (! (activePublicationIds.isEmpty() || activePublicationIds.contains(publicationId))) {
+			log.debug("not committing transaction because publicationId " + publicationId + " is not in the list of active publication ids");
+			return;
+		}
 		try
 		{
 			this.commitAddContentToCloudSearch(this.itemAdds);

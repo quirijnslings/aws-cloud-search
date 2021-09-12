@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element type="TCDLEngineType" name="TCDLEngine">
+        <xs:annotation>
+            <xs:documentation>Optional configuration needed in case of using the UGC TCDL transformers
+                &lt;TagBundle Resource="ugc_tag_bundle.xml"/&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="PropertiesType">
+        <xs:sequence>
+            <xs:element type="PropertyType" name="Property" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="PropertyType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="Name" use="optional"/>
+                <xs:attribute type="xs:string" name="Value" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="TagBundleType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="Resource"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="TCDLTagHandlerType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="Class" use="required">
+                    <xs:annotation>
+                        <xs:documentation>
+                            <p>The Java class that implements the tag handler.</p>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute type="xs:string" name="AllowCodeBlock" use="optional" default="true">
+                    <xs:annotation>
+                        <xs:documentation>
+                            <p>For tags that generate code inside a code block, set this attribute to
+                                <code>false</code>
+                                to prevent the tag from generating the code block markers.
+                            </p>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute type="xs:string" name="Override" use="optional" default="false"></xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="TCDLTagType">
+        <xs:sequence>
+            <xs:element type="TCDLTagHandlerType" name="Handler">
+                <xs:annotation>
+                    <xs:documentation>
+                        <p>Handler for this tag.</p>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Namespace" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    <p>Namespace for this tag.</p>
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    <p>The name of this tag.</p>
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="TCDLTagsType">
+        <xs:sequence>
+            <xs:element name="Tag" type="TCDLTagType" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        <p>A tag definition for TCDL.</p>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DocumentBuilderType">
+        <xs:attribute name="Class" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    <p>
+                        Fully qualified name of a custom Java class
+                        to replace the built-in implementation of the DocumentBuilder.
+                    </p>
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="TCDLEngineType">
+        <xs:sequence>
+            <xs:element type="DocumentBuilderType" name="DocumentBuilder" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        <p>Specifies an alternative implementation of the DocumentBuilder
+                            that is responsible for generating the final output document
+                        </p>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element type="PropertiesType" name="Properties" />
+            <xs:element type="TCDLTagsType" name="Tags" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        <p>
+                            Defines tags and their handlers. When this element is not specified,
+                            TCDL uses the default set of tags and handlers. If you specify this element,
+                            you must define all default tags and handlers explicitly.
+                        </p>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element type="TagBundleType" name="TagBundle" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Optional configuration needed in case of using the UGC TCDL transformers
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="CodeStartMarker" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    <p>Specifies an alternative marker to use for opening a code block.</p>
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="CodeEndMarker" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    <p>Specifies an alternative marker to use for closing a code block.</p>
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" name="Version"/>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ServiceConfig ConnectionTimeout="${indexconnectiontimeout:-10000}"
+               ReadTimeout="${indexreadtimeout:-30000}"
+               WriteTimeout="${indexwritetimeout:-30000}"
+               MaxIdleConnections="${indexmaxidleconnections:-30}">
+    <!--
+        The location of index service. Used when Index Service capability was not registered in a discovery service.
+    -->
+    <IndexService ServiceUri="${indexserviceurl:-http://localhost:8097/index.svc}"/>
+    <DiscoveryService ServiceUri="${discoveryurl:-http://localhost:8082/discovery.svc}"/>
+    <TokenService ClientId="cduser" ClientSecret="${cduserpassword:-encrypted:o/cgCBwmULeOyUZghFaKJA==}"/>
+    <!--  Enable to use prefix name with udp-index (optional)  -->
+    <!--
+        <IndexCommonNamePrefix Prefix="${index.common.name.prefix:-staging}"/>
+    -->
+    <QueryClient Class="${queryclientclass:-com.sdl.delivery.iq.query.client.embedded.EmbeddedQueryClient}"
+                 Embedded="${isEmbeddedQueryClient:-true}">
+        <QueryProvider Type="elasticsearch">
+            <Properties>
+                <Property Name="es.host" Value="${eshost:-localhost}"/>
+                <Property Name="es.port" Value="${esport:-9200}"/>
+                <Property Name="es.scheme" Value="${esscheme:-http}"/>
+                <Property Name="es.ingest.host" Value="${esingesthost:-localhost}"/>
+                <Property Name="es.ingest.port" Value="${esingestport:-9200}"/>
+                <Property Name="es.ingest.scheme" Value="${esingestscheme:-http}"/>
+            </Properties>
+        </QueryProvider>
+    </QueryClient>
+    <IndexClient Class="${indexclientclass:-com.sdl.delivery.iq.index.client.DefaultIndexingClient}"/>
+</ServiceConfig>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TCDLEngine xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="schemas/tcdl-conf.xsd" Version="11.5">
+    <Properties>
+        <!-- Default code generation will always be targetted towards the use of tag libraries and
+                        server controls. Uncomment these lines to drop that behaviour -->
+        <!--
+        <Property Name="tcdl.dotnet.style" Value="controls"/>
+        <Property Name="tcdl.jsp.style" Value="tags"/>
+        -->
+        <!-- Uncomment any of the following lines to set the target language as a specific language -->
+        <!--<Property Name="tcdl.target.language" Value="jsp" />-->
+        <!--<Property Name="tcdl.target.language" Value="dotnet" />-->
+        <Property Name="tcdl.target.language" Value="rel"/>
+    </Properties>
+    <!-- Optional configuration needed in case of using the UGC TCDL transformers -->
+    <!--
+        <TagBundle Resource="ugc_tag_bundle.xml"/>
+    -->
+</TCDLEngine>

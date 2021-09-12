@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Deployer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="11.5" xsi:noNamespaceSchemaLocation="schemas/deployer-conf.xsd" LegacyTransport="false">
+    <Pipelines>
+        <Pipeline Id="Tridion-Bootstrap" Action="TridionBootstrap" Verb="Content,Prepare,Commit,Rollback">
+            <Steps>
+                <Step Id="TridionUnzipStep" />
+            </Steps>
+        </Pipeline>
+        <Pipeline Id="Tridion-Wait" Action="Deploy,Undeploy" Verb="Wait">
+            <Steps>
+                <Step Id="TridionWaitStep" />
+            </Steps>
+        </Pipeline>
+        <Pipeline Id="Tridion-Process-Deploy" Action="Deploy" Verb="Process">
+            <Steps>
+                <Step Id="SchemaDeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.SchemaDeploy" Type="SchemaDeploy" />
+                </Step>
+                <Step Id="PageDeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.PageDeploy" Type="PageDeploy">
+                        <Transformer Class="com.tridion.transformer.TCDLDefaultTransformer" />
+                    </Module>
+                </Step>
+                <Step Id="BinaryDeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.BinaryDeploy" Type="BinaryDeploy" />
+                </Step>
+                <Step Id="ComponentDeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.ComponentDeploy" Type="ComponentDeploy" />
+                </Step>
+                <Step Id="TemplateDeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.TemplateDeploy" Type="TemplateDeploy" />
+                </Step>
+                <Step Id="PublicationDeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.PublicationDeploy" Type="PublicationDeploy" />
+                </Step>
+                <Step Id="TaxonomyDeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.TaxonomyDeploy" Type="TaxonomyDeploy" />
+                </Step>
+                <Step Id="ComponentPresentationDeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.ComponentPresentationDeploy" Type="ComponentPresentationDeploy">
+                        <Transformer Class="com.tridion.transformer.TCDLDefaultTransformer" />
+                    </Module>
+                </Step>
+                <Step Id="StructureGroupDeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.StructureGroupDeploy" Type="StructureGroupDeploy" />
+                </Step>
+                <Step Id="TridionContentDataStep" />
+                
+            </Steps>
+        </Pipeline>
+        <Pipeline Id="Tridion-Process-Undeploy" Action="Undeploy" Verb="Process">
+            <Steps>
+                <Step Id="PageUndeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.PageUndeploy" Type="PageUndeploy" />
+                </Step>
+                <Step Id="ComponentPresentationUndeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.ComponentPresentationUndeploy" Type="ComponentPresentationUndeploy" />
+                </Step>
+                <Step Id="TaxonomyUndeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.TaxonomyUndeploy" Type="TaxonomyUndeploy" />
+                </Step>
+                <Step Id="StructureGroupUndeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.StructureGroupUndeploy" Type="StructureGroupUndeploy" />
+                </Step>
+                <Step Id="ComponentUndeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.ComponentUndeploy" Type="ComponentUndeploy" />
+                </Step>
+                <Step Id="PublicationUndeploy" Factory="com.sdl.delivery.deployer.steps.TridionExecutableStepFactory">
+                    <Module Class="com.tridion.deployer.modules.PublicationUndeploy" Type="PublicationUndeploy" />
+                </Step>
+                <Step Id="TridionContentDataStep" />
+                
+            </Steps>
+        </Pipeline>
+        <Pipeline Id="Tridion-PreCommit-TX" Action="Deploy,Undeploy" Verb="PreCommit">
+            <Steps>
+                <Step Id="TridionPreCommitStep" />
+            </Steps>
+        </Pipeline>
+        <Pipeline Id="Tridion-Commit-TX" Action="Deploy,Undeploy" Verb="Commit">
+            <Steps>
+                <Step Id="TridionCommitStep">
+                    <RetryPoint PipelineId="Tridion-PreCommit-TX" StepId="TridionPreCommitStep" />
+                </Step>
+            </Steps>
+        </Pipeline>
+        <Pipeline Id="Tridion-Rollback-TX" Action="Deploy,Undeploy" Verb="Rollback">
+            <Steps>
+                <Step Id="TridionRollbackStep" />
+            </Steps>
+        </Pipeline>
+        <Pipeline Finalize="true" Id="Tridion-Cleanup" Action="Deploy,Undeploy" Verb="*">
+            <Steps>
+                <Step Id="TridionCleanupStep" />
+            </Steps>
+        </Pipeline>
+    </Pipelines>
+
+    
+    <BinaryStorage Id="PackageStorage" Adapter="FileSystem">
+        <Property Name="Path" Value="${DEPLOYER_BINARY_STORAGE_PATH}" />
+    </BinaryStorage>
+
+
+    <State>
+        <Storage Adapter="mssql" driver="com.microsoft.sqlserver.jdbc.SQLServerDriver">
+            <Property Name="host" Value="quirijn-tridion95.trivident.com" />
+            <Property Name="port" Value="1433" />
+            <Property Name="database" Value="Tridion_State_Store" />
+            <Property Name="user" Value="TridionBrokerUser" />
+            <Property Name="password" Value="Tr1v1d3nt" />
+            <Property Name="validationQuery" Value="select 1" />
+        </Storage>
+    </State>
+
+    
+    <Queues>
+        
+        <Queue Default="true" Verbs="Content" Adapter="FileSystem" Id="${contentqueuename:-ContentQueue}">
+            <Property Name="Destination" Value="d:/Temp/CA/Deployer/queue" />
+        </Queue>
+        <Queue Verbs="Commit,Rollback" Adapter="FileSystem" Id="${commitqueuename:-CommitQueue}">
+            <Property Name="Destination" Value="d:/Temp/CA/Deployer/queue/FinalTX" />
+            
+        </Queue>
+        <Queue Verbs="Prepare" Adapter="FileSystem" Id="${preparequeuename:-PrepareQueue}">
+            <Property Name="Destination" Value="d:/Temp/CA/Deployer/queue/Prepare" />
+            
+        </Queue>
+
+        
+        <Adapter Id="FileSystem">
+            
+        </Adapter>
+
+        
+        
+
+        
+        
+
+        
+        <Workers>
+            <Property Name="QueuePollingInterval" Value="2s"/>
+            <Property Name="RetriesInterval" Value="100ms"/>
+            <Property Name="MaxRetries" Value="11"/>
+            <Property Name="Cleanup" Value="true"/>
+        </Workers>
+    </Queues>
+
+    
+    
+
+</Deployer>

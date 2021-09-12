@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="Deployer" type="DeployerType"/>
+    <xs:complexType name="BinaryStorageType">
+        <xs:sequence>
+            <xs:element type="PropertyType" name="Property" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="Id"/>
+        <xs:attribute type="xs:string" name="Adapter"/>
+    </xs:complexType>
+    <xs:complexType name="ModuleType" mixed="true">
+        <xs:sequence>
+            <xs:element type="PropertyType" name="Property" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="StateType">
+        <xs:annotation>
+            <xs:documentation>
+                <p>
+                    State Store Configuration Panel. This is where State Store Database is configured.
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element type="StorageType" name="Storage" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="StorageType">
+        <xs:annotation>
+            <xs:documentation>
+                <p>
+                    State Store Storage Configuration. All configurations related to database connection properties
+                    is described here.
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element type="PropertyType" name="Property" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element type="ExtendedPropertiesType" name="ExtendedProperties" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="Adapter"/>
+        <xs:attribute type="xs:string" name="generateDDL"/>
+        <xs:attribute type="xs:string" name="driver"/>
+    </xs:complexType>
+    <xs:complexType name="ExtendedPropertiesType">
+        <xs:annotation>
+            <xs:documentation>
+                <p>Extended database properties</p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element type="PropertyType" name="Property" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="StepType" mixed="true">
+        <xs:sequence>
+            <xs:any namespace="##any" processContents="skip" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="Factory" use="optional"/>
+        <xs:attribute type="xs:string" name="Id" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="QueuesType">
+        <xs:sequence>
+            <xs:element type="QueueType" name="Queue" maxOccurs="unbounded" minOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Queue configuration</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element type="AdapterType" name="Adapter" maxOccurs="unbounded" minOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Adapter configuration for the queues</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element type="WorkerType" name="Workers" maxOccurs="1" minOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Default worker configuration for the deployer</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="QueueType">
+        <xs:sequence>
+            <xs:element type="PropertyType" name="Property" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="Id" use="required"/>
+        <xs:attribute type="xs:string" name="Verbs" use="required"/>
+        <xs:attribute type="xs:string" name="Adapter" use="required"/>
+        <xs:attribute type="xs:string" name="Default" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="WorkerType">
+        <xs:sequence>
+            <xs:element type="PropertyType" name="Property" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AdapterType">
+        <xs:sequence>
+            <xs:element type="PropertyType" name="Property" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="Id" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="StepsType">
+        <xs:sequence>
+            <xs:element type="StepType" name="Step" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="PipelineType">
+        <xs:sequence>
+            <xs:element type="StepsType" name="Steps" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="Action" use="optional"/>
+        <xs:attribute type="xs:string" name="Verb" use="optional"/>
+        <xs:attribute type="xs:string" name="Id" use="optional"/>
+        <xs:attribute type="xs:boolean" name="Finalize" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="PipelinesType">
+        <xs:sequence>
+            <xs:element type="PipelineType" name="Pipeline" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MonitoringType">
+        <xs:sequence>
+            <xs:element type="PropertyType" name="Property" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DeployerType">
+        <xs:all>
+            <xs:element type="MonitoringType" name="Monitoring" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        <p>Configuration of a client for the Monitoring service,
+                            causing the Deployer to report its status to a Monitoring Agent.
+                        </p>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element type="QueuesType" name="Queues">
+                <xs:annotation>
+                    <xs:documentation>List of Queues to be configured.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element type="StateType" name="State" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Configuration of State Storage Store</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element type="BinaryStorageType" name="BinaryStorage">
+                <xs:annotation>
+                    <xs:documentation>Binary Storage configuration</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element type="LicenseType" name="License" minOccurs="0" maxOccurs="1"/>
+            <xs:element type="RMIChannelType" name="RMIChannel" minOccurs="0" maxOccurs="1"/>
+            <xs:element type="PipelinesType" name="Pipelines" minOccurs="0" maxOccurs="1"/>
+        </xs:all>
+        <xs:attribute type="xs:string" name="Version"/>
+        <xs:attribute type="xs:boolean" name="InProcessDeploy"/>
+        <xs:attribute type="xs:boolean" name="LegacyTransport"/>
+    </xs:complexType>
+    <xs:complexType name="PropertyType">
+        <xs:annotation>
+            <xs:documentation>
+                <p>
+                    Primitive key/value pair representation.
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="Name" use="optional"/>
+                <xs:attribute type="xs:string" name="Value" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="LicenseType">
+        <xs:annotation>
+            <xs:documentation>
+                <p>
+                    Deprecated: The location of the license file.
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="Path"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="RMIChannelType">
+        <xs:annotation>
+            <xs:documentation>
+                <p>
+                    Specifies the RMI Listener port.
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute type="xs:int" name="ListenerPort"/>
+    </xs:complexType>
+    <xs:complexType name="PropertiesType">
+        <xs:annotation>
+            <xs:documentation>
+                <p>
+                    Type handling PropertyType sequence.
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element type="PropertyType" name="Property" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
